@@ -62,23 +62,37 @@ public class ClientHandler implements Runnable{
         }
     }
  
-    private void insertData(String cmsg){
-        String []cmsgArray=cmsg.split(" ");
-        PreparedStatement stmt=null;
+    private void insertusers(String cmsg) {
+        String[] Array =cmsg.split(" ");
+        PreparedStatement quer=null;
+        if(Array[1].trim().isEmpty()||Array[2].trim().isEmpty())
+      {
+                      
+          out.println("Missing_Info");
+                  
+      }
+        else {
         try {
             // table name
-            stmt=con.prepareStatement("INSERT INTO selertable VALUES(?,?)");
-            stmt.setString(1, cmsgArray[1]);
-            stmt.setString(2, cmsgArray[2]);
-            stmt.execute();
+            System.out.println("1/check");
+            quer=con.prepareStatement("INSERT INTO client VALUES(?,?,?,?,?)");
+            quer.setString(1, Array[1]);
+            quer.setString(2, Array[2]);
+            quer.setInt(3, Integer.parseInt(Array[4]));
+            quer.setString(4, Array[3]);
+            quer.setString(5, Array[5]);
+            quer.execute();
             out.println("valid");
-        } catch (SQLException ex) {
-            out.println("notvalid");
+            System.out.println("2/inserted");
         }
+        catch (SQLException ex) {
+                out.println("notvalid");
+                
+        } 
         finally{
             try {
-                if(stmt !=null)
-                    stmt.close();
+                if(quer !=null)
+                    quer.close();
             } catch (SQLException ex) {
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -86,6 +100,7 @@ public class ClientHandler implements Runnable{
         
         
     }
+}
     private void getproductsDB(){
         String products="";
         Statement stmt=null;
