@@ -53,7 +53,7 @@ public class ClientHandler implements Runnable{
             }
             
             if(cmsg.startsWith("signup")){                
-                insertData(cmsg);               
+                insertusers(cmsg);               
             }
             else if(cmsg.equals("getProducts")){
                 getproductsDB();
