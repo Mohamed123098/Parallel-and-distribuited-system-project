@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-public class server1c {
+public class Server {
 
     public static void main(String[] args) throws SQLException {
         ServerSocket server = null;
