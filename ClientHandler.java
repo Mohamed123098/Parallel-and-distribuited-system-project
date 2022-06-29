@@ -74,7 +74,7 @@ public class ClientHandler implements Runnable{
         else {
         try {
             // table name
-            System.out.println("1/check");
+           
             quer=con.prepareStatement("INSERT INTO client VALUES(?,?,?,?,?)");
             quer.setString(1, Array[1]);
             quer.setString(2, Array[2]);
@@ -83,7 +83,7 @@ public class ClientHandler implements Runnable{
             quer.setString(5, Array[5]);
             quer.execute();
             out.println("valid");
-            System.out.println("2/inserted");
+            
         }
         catch (SQLException ex) {
                 out.println("notvalid");
