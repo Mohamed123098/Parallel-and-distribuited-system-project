@@ -16,7 +16,7 @@ purchased items.<br/>
 - The system database should be a relational database composed of
 several normalized tables distributed over several sites.<br/>
 - You must use the concept of sockets and threading.<br/>
-#Project content<br/>
+<h1>#Project content<br/>
 we have:<br/>
 GUI which is made by java swing<br/>
 Database which is made by MYSQL<br/>
