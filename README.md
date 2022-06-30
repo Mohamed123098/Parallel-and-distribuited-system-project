@@ -1,6 +1,6 @@
 # Marketplace system
-                    In this project, you are going to build a distributed online marketplace
-system. This system must be a desktop application that provides at least
+                    In this project, you are going to build a distributed online marketplace <br/>
+system. This system must be a desktop application that provides at least<br/>
 the following features to its clients:
 i. Create a new account.
 ii. Login to his account.
