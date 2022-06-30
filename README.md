@@ -1,6 +1,6 @@
 # Marketplace system
-                    In this project, you are going to build a distributed online marketplace <br/>
-system. This system must be a desktop application that provides at least<br/>
+                    In this project, we built a distributed online marketplace system.
+This system is a desktop application that provides <br/>
 the following features to its clients:<br/>
 i. Create a new account.<br/>
 ii. Login to his account.<br/>
@@ -13,13 +13,13 @@ vi. Purchase items, transferring money from the client’s account to the market
 vii. View the client’s account info such as current cash balance , History of
 purchased items.<br/>
 - The system admin can have an overview about the overall system.<br/>
-- The system database should be a relational database composed of
+- The system database is a relational database composed of
 several normalized tables distributed over several sites.<br/>
-- You must use the concept of sockets and threading.<br/>
+- we used the concept of sockets and threading.<br/>
 <h2>#Project content</h2><br/>
 we have:<br/>
-GUI which is made by java swing<br/>
-Database which is made by MYSQL<br/>
+GUI built using java swing<br/>
+Database schema made using MYSQL<br/>
 Database connection, in which we use java connector<br/>
 Functions which contain(create account, login, add, delete item, etc)<br/>
 
