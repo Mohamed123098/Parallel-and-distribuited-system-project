@@ -23,6 +23,6 @@ Database schema made using MYSQL<br/>
 Database connection, in which we use java connector<br/>
 Functions which contain(create account, login, add, delete item, etc)<br/>
 <h2>#Languages used</h2><br/>
-- Java
+- Java <br/>
 - SQL
 
