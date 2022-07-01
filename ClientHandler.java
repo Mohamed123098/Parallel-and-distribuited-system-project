@@ -64,10 +64,15 @@ public class ClientHandler implements Runnable{
             else if(cmsg.equals("getProducts")){
                 getproductsDB();
             }
-            
+            else if(cmsg.contains("getCLientList")){
+                ShowClientList();
+            }
+            else if (cmsg.contains("deposit")){
+            deposit(cmsg);
+            }
         }
     }
- 
+ //////////////// Sign Up function /////////////////
     private void insertusers(String cmsg) {
         String[] Array =cmsg.split(" ");
         PreparedStatement quer=null;
@@ -107,6 +112,7 @@ public class ClientHandler implements Runnable{
         
     }
 }
+  //////////////// Get Products function /////////////////
     private void getproductsDB(){
         String products="";
         Statement stmt=null;
@@ -132,6 +138,7 @@ public class ClientHandler implements Runnable{
             }
         }
     }
+    //////////////// Authentication function /////////////////
     private void authenticate(String req){
         String[] Array=req.split(" ");
         Statement quer=null;
@@ -211,7 +218,7 @@ public class ClientHandler implements Runnable{
             
         } 
     }
-        
+     //////////////// Show Account Info function /////////////////
         private void showInfo (String req){
     String[] Array=req.split(" ");
        PreparedStatement quer=null;
@@ -249,8 +256,81 @@ public class ClientHandler implements Runnable{
         }
     
     }
+    //////////////// deposit function /////////////////
+        public synchronized void deposit(String req){
+     String[] Array=req.split(" ");
+       PreparedStatement quer=null;
+       //ResultSet rs=null;
+       
+       System.out.println(Array[0]+"     "+Array[1]+"    "+Array[2]+"   "+Array[3]);
+   int balance = Integer.parseInt(Array[2]);
+   int depositedM = Integer.parseInt(Array[3]);
+   int cash = balance + depositedM;
+            try {
+                System.out.println("in");
+                quer=con.prepareStatement( "UPDATE client SET cash='"+cash+"' where c_name= '" + Array[1] +  "';");
+                
+                quer.executeUpdate();
+            } catch (SQLException ex) {
+                
+                    System.out.println("failed");
+            }
+            
+        finally{
+            try {
+                if(quer !=null)
+                {quer.close();
+               }
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
     
     
+    }
+    }
+    //////////////// Get Client list function /////////////////
+       private void ShowClientList(){
+        String list="";
+        Statement stmt=null;
+       // Statement s=null;
+        
+        try {
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery("select c.c_name, c.address, c.phone, ca.pname,ca.no_of_products,ca.total_price, p.cat_name from client AS c,cart AS ca,product AS p where c.c_name=ca.c_name and p.pname = ca.pname ;");
+            while(rs.next()){
+                list+=rs.getString(1)+"~@";
+                list+=rs.getString(2)+"~@";
+                list=list.concat(String.valueOf(rs.getInt(3)))+"~@";
+                list+=rs.getString(4)+"~@";
+                list=list.concat(String.valueOf(rs.getInt(5)))+"~@";
+                list=list.concat(String.valueOf(rs.getFloat(6)))+"~@";
+                list+=rs.getString(7)+"~@";
+            }
+            //s=con.createStatement();
+            //ResultSet rss =s.executeQuery("select price from product where pname=' "+Array[1]+"';");
+            System.out.println(list);
+             try {
+                 //out.println(products);
+                 dos.writeUTF(list);
+                 dos.flush();
+             } catch (IOException ex) {
+                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+             }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+       
+   }
+    //////////////// Get Purshased items function /////////////////
+   
 }
     
     
