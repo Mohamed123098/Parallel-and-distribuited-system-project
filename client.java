@@ -96,19 +96,6 @@ public class Client {
     
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //////////////Function request for Sign Up////////////////////
    public static String signupCS(String uname,String pass,String address,int phone,String gender){
         
