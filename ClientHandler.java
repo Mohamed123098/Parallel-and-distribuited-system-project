@@ -64,6 +64,18 @@ public class ClientHandler implements Runnable{
             else if(cmsg.contains("getCLientList")){
                 ShowClientList();
             }
+            else if (cmsg.contains("show_Balance")){
+            //System.out.println("Show_balance");
+            ShowBalance(cmsg);
+            }
+            else if (cmsg.contains("change")){
+             //System.out.println("chaange");
+            changeB(cmsg);
+            }
+            
+            else if (cmsg.contains("getProductsList")){
+                ShowProductsList(cmsg);
+            }
             else if (cmsg.contains("deposit")){
             deposit(cmsg);
             }
@@ -424,7 +436,117 @@ public class ClientHandler implements Runnable{
   
     
     
+    ////////// ShowBalance function/////////////////////
+     public synchronized void ShowBalance (String req){
+    String[] Array=req.split(" ");
+       Statement quer=null;
+       ResultSet rs=null;
+       System.out.println(Array[0]+"     "+Array[1]);
+       String name="";     
+       int balance=0;
+            try {
+                System.out.println("in");
+                quer = con.createStatement();
+                 rs=quer.executeQuery("SELECT cash FROM client where c_name= '" + Array[1] +  "'");
+                while(rs.next()){
+               balance = Integer.parseInt(rs.getString(1));
+                    System.out.println(balance);
+
+                }
+                String data = String.valueOf(balance);
+               // dos.writeUTF(data);
+                //dos.flush();
+               out.println(data);
+               System.out.println(" balance sent");
+                
+            } catch (SQLException ex) {
+                    out.println("notvalid");
+                    Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                   // dos.writeUTF("notvalid");
+                    //dos.flush();
+            }
+        finally{
+            try {
+                if(quer !=null)
+                {quer.close();
+               }
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     
+    }
+    /////////////////////////function change Balance//////////////////
+    public synchronized void changeB (String req){
+     String[] Array=req.split(" ");
+       PreparedStatement quer=null;
+       //ResultSet rs=null;
+       
+       System.out.println(Array[0]+"     "+Array[1]+"    "+Array[2]+"   "+Array[3]);
+   int total = Integer.parseInt(Array[2]);
+   int balance = Integer.parseInt(Array[3]);
+   int cash = balance - total;
+            try {
+                System.out.println("in");
+                quer=con.prepareStatement( "UPDATE client SET cash='"+cash+"' where c_name= '" + Array[1] +  "';");
+                
+                quer.executeUpdate();
+            } catch (SQLException ex) {
+                
+                    System.out.println("failed");
+            }
+            
+        finally{
+            try {
+                if(quer !=null)
+                {quer.close();
+               }
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    
+    
+    }
+}
+    //////////////////////function get products List/////////////////////////
+      private void ShowProductsList(String req ){
+        String products="";
+        String[] Array=req.split(" ");
+        Statement stmt=null;
+        Statement s=null;
+        //String nam="";
+        
+        try {
+            stmt = con.createStatement();
+            ResultSet rs =stmt.executeQuery("select pname,total_price,no_of_products from cart where c_name='"+Array[1]+"';");
+            while(rs.next()){
+                products+=rs.getString(1)+"~@";
+                products=products.concat(String.valueOf(rs.getFloat(2)))+"~@";
+                products=products.concat(String.valueOf(rs.getInt(3)))+"~@";
+            }
+            //s=con.createStatement();
+            //ResultSet rss =s.executeQuery("select price from product where pname=' "+Array[1]+"';");
+            //System.out.println(products);
+             //try {
+                 out.println(products);
+                 //dos.writeUTF(products);
+                 //dos.flush();
+             /*} catch (IOException ex) {
+                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+             }*/
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+   }
+  
 }
     
     
