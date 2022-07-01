@@ -1,4 +1,100 @@
+package parallel2;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.derby.iapi.reference.ClassName;
+
+public class Client {
+    
+    private static BufferedReader in;
+    private static PrintWriter out;
+    private static String c_name=""; // c_name="" when login is finished
+    private static Socket connection=null ;
+
+    
+    public static void init() {
+        try {
+            InetAddress addr=InetAddress.getByName ("Localhost");
+            connection=new Socket (addr, 909);
+            
+            in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            out  = new PrintWriter(connection.getOutputStream(),true);
+            //String x=in.readLine();
+            //out.println("hello");
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void setC_name(String c_name) {
+        Client.c_name = c_name;
+    }
+    
+    public static String getProducts(){
+        String products="";
+        out.println("getProducts");
+        try {
+            products=in.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
+   public static void addToCart(String product ,String quantiy,double total){
+       out.println("addToCart~@"+c_name+"@"+total+"@"+quantiy+"~@"+product);
+   }
+   
+    public static void removeFromCart(String pname ,String quantity) {
+        out.println("removeFromCart~@"+c_name+"@"+pname+"@"+quantity);
+    }
+    public static String getAvailQun(String pname) {
+        String AvailQun="";
+        out.println("getAvailQun~@"+pname);
+        try {
+            AvailQun= in.readLine();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return AvailQun;
+        
+    }
+    
+    public static void addProduct(String pname,String quantity,String price,String category ) {
+        out.println("addProduct~@"+quantity+"@"+price+"@"+pname+"~@"+category);
+    }
+    public static void editProduct(String pname,String quantity,String price,String category ) {
+        out.println("editProduct~@"+quantity+"@"+price+"@"+pname+"~@"+category);
+    }
+    public static void deleteProduct(String pname){
+        out.println("deleteProduct~@"+pname);
+    }
+    
+    public static void close() {       
+        try {
+            out.close();
+            in.close();
+            connection.close();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+
+    
+    
+    
+    
+}
 
 
 
