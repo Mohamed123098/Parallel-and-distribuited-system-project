@@ -204,6 +204,45 @@ public class ClientHandler implements Runnable{
         }
             
         } 
+    }
+        
+        public void showInfo (String req){
+    String[] Array=req.split(" ");
+       PreparedStatement quer=null;
+       ResultSet rs=null;
+       System.out.println(Array[0]+"     "+Array[1]);
+       String name="";
+       String add="";
+       int phone_no=0;
+       int cash=0;
+            try {
+                System.out.println("in");
+                quer = con.prepareStatement("SELECT c_name, address, phone, cash FROM client where c_name= '" + Array[1] +  "';");
+                 rs=quer.executeQuery();
+                while(rs.next()){
+                name = rs.getString(1);
+                add = rs.getString(2);
+                phone_no = rs.getInt(3);
+                cash=rs.getInt(4);
+                }
+                String data = name+" "+add+" "+phone_no+" "+cash;
+            
+                out.println(data);
+                
+            } catch (SQLException ex) {
+               out.println("notvalid");
+            } 
+        finally{
+            try {
+                if(quer !=null)
+                {quer.close();
+               }
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    
+    }
     
     
 }
