@@ -88,13 +88,8 @@ public class Client {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
 
-    
-    
-    
-    
-}
+
 
 //////////////Function request for Sign Up////////////////////
    public static String signupCS(String uname,String pass,String address,int phone,String gender){
@@ -153,7 +148,7 @@ public class Client {
         return clients;
     }
 //////////////Function request to deposit money in E-wallet////////////////////
-    public static void depositCS (String uname,int balance,int depositedMoney)
+    public synchronized static void depositCS (String uname,int balance,int depositedMoney)
     {
      //String data = "";
     try{
@@ -168,3 +163,26 @@ public class Client {
     //return data;
     
     }
+    
+    public static void changeBalance(String uname,int total,int balance){
+        
+   out.println("change "+uname+" "+total+" "+balance);
+   
+    
+     }
+    public static String purchase (String uname){
+    String data="";
+    out.println("show_Balance "+uname);
+    System.out.println("op");
+        System.out.println("oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo");
+    
+        try {
+            data =String.valueOf(in.readLine());
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+   
+        System.out.println(" client bal"+data);
+    return data;
+    }
+}
