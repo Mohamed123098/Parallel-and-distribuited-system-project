@@ -58,6 +58,10 @@ public class ClientHandler implements Runnable{
             else if(cmsg.equals("getProducts")){
                 getproductsDB();
             }
+            else if (cmsg.contains("Account")){
+            System.out.println("info");
+            showInfo(cmsg);
+            }
             
         }
     }
