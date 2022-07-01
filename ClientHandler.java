@@ -58,6 +58,9 @@ public class ClientHandler implements Runnable{
             else if(cmsg.contains("login")){
                 authenticate(cmsg);
             }
+            else if (cmsg.contains("Account")){
+            showInfo(cmsg);
+            }
             else if(cmsg.equals("getProducts")){
                 getproductsDB();
             }
@@ -209,7 +212,7 @@ public class ClientHandler implements Runnable{
         } 
     }
         
-        public void showInfo (String req){
+        private void showInfo (String req){
     String[] Array=req.split(" ");
        PreparedStatement quer=null;
        ResultSet rs=null;
