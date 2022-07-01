@@ -125,7 +125,87 @@ public class ClientHandler implements Runnable{
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }  
+    }
+    private void authenticate(String req){
+        String[] Array=req.split(" ");
+        Statement quer=null;
+        ResultSet rs;
+        //System.out.println(Array[0]+"     "+Array[1]+"      "+Array[2]+"    "+Array[3]);
+        String a="";
+        String b="";
+        
+         if (Array[1].equals("Client")) {
+              try {
+                
+                String q="SELECT `c_name`,`c_password` FROM client where c_name= '" + Array[2] + "' and c_password= '" + Array[3] + "';";
+                
+                quer= con.createStatement();
+                
+                rs=quer.executeQuery(q);
+                if(rs.next())
+                    
+                { 
+                    a=rs.getString(1);
+                   b=rs.getString(2);
+                   out.println("validClient");
+
+                } else {
+                    out.println("notvalid");
+                
+                }   
+            } catch (SQLException ex) {
+              
+              }
+        finally{
+            try {
+                if(quer !=null)
+                {quer.close();
+               }
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }}
+        
+       else{
+                 try{
+                //System.out.println("adminnnnnnnnnnn");
+                String q= "SELECT a_name,a_password FROM admin where a_name='"+Array[2]+"'and a_password='"+Array[3]+"';";
+              
+                quer= con.createStatement();
+                
+                rs=quer.executeQuery(q);
+                if(rs.next())
+                {   a=rs.getString(1);
+                 b=rs.getString(2);
+                
+                out.println("Avalid");
+              
+                 }
+                else{
+                  
+                 //System.out.println("message");
+                out.println("notinA");
+             
+                    
+                 }  
+            }
+            catch (SQLException ex) {
+           
+        }
+            
+       
+        finally{
+            try {
+                if(quer !=null)
+                    quer.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+            
+        } 
+    
+    
 }
     
     
