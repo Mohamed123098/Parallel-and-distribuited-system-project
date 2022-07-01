@@ -185,4 +185,18 @@ public class Client {
         System.out.println(" client bal"+data);
     return data;
     }
+        public static String getProductsList(String uname){
+        String products="";
+        out.println("getProductsList "+uname);
+        
+        try {
+      //      dos.writeUTF("getProductsList "+uname);
+        //    dos.flush();
+            products=in.readLine();
+           // products=dis.readUTF();
+        } catch (IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
 }
