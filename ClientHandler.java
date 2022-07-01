@@ -52,15 +52,14 @@ public class ClientHandler implements Runnable{
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            if(cmsg.startsWith("signup")){                
+            if(cmsg.contains("signup")){                
                 insertusers(cmsg);               
+            }
+            else if(cmsg.contains("login")){
+                authenticate(cmsg);
             }
             else if(cmsg.equals("getProducts")){
                 getproductsDB();
-            }
-            else if (cmsg.contains("Account")){
-            System.out.println("info");
-            showInfo(cmsg);
             }
             
         }
