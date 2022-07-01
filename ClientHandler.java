@@ -61,14 +61,20 @@ public class ClientHandler implements Runnable{
             else if (cmsg.contains("Account")){
             showInfo(cmsg);
             }
-            else if(cmsg.equals("getProducts")){
-                getproductsDB();
-            }
             else if(cmsg.contains("getCLientList")){
                 ShowClientList();
             }
             else if (cmsg.contains("deposit")){
             deposit(cmsg);
+            }
+            else if(cmsg.equals("getProducts")){
+                getproductsDB();
+            }
+            else if (cmsg.startsWith("addToCart")){
+                addToCartDB(cmsg);
+            }
+            else if (cmsg.startsWith("removeFromCart")){
+                removeFromCartDB(cmsg);    
             }
         }
     }
@@ -112,32 +118,6 @@ public class ClientHandler implements Runnable{
         
     }
 }
-  //////////////// Get Products function /////////////////
-    private void getproductsDB(){
-        String products="";
-        Statement stmt=null;
-        try {
-            stmt = con.createStatement();
-            ResultSet rs =stmt.executeQuery("select * from productlist");
-            while(rs.next()){
-                products+= rs.getString("ID")+"^";
-                products+=rs.getString("Name")+"^";
-                products+=rs.getString("Quantity")+"^";
-                products+=rs.getString("Price")+"^";
-            }
-            out.println("products");
-        } catch (SQLException ex) {
-            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally{
-            try {
-                if(stmt !=null)
-                    stmt.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
     //////////////// Authentication function /////////////////
     private void authenticate(String req){
         String[] Array=req.split(" ");
@@ -329,56 +309,124 @@ public class ClientHandler implements Runnable{
         }
        
    }
+    
+    
+    //////////////// Get Products function /////////////////
+    private void getproductsDB(){
+        String products="";
+        Statement stmt=null;
+        try {
+            stmt = con.createStatement();
+            ResultSet rs =stmt.executeQuery("select * from productlist");
+            while(rs.next()){
+                products+= rs.getString("ID")+"^";
+                products+=rs.getString("Name")+"^";
+                products+=rs.getString("Quantity")+"^";
+                products+=rs.getString("Price")+"^";
+            }
+            out.println("products");
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    //////////////// Add to cart function /////////////////
+    private void addToCartDB(String cmsg){
+        String []cmsgArray=cmsg.split("~@");
+        PreparedStatement stmt=null;
+        PreparedStatement s=null;
+        try {
+            // table name
+            stmt=con.prepareStatement("INSERT INTO cart(c_name,total_price,no_of_products,pname) VALUES(?,?,?,?)");
+            stmt.setString(1, cmsgArray[1]);
+            stmt.setFloat(2,Float.parseFloat(cmsgArray[2]));
+            stmt.setInt(3, Integer.parseInt( cmsgArray[3]));
+            stmt.setString(4, cmsgArray[4]);
+            stmt.execute();
+            s = con.prepareStatement("update product set quantity=quantity-? where pname=?");
+            s.setInt(1,Integer.parseInt( cmsgArray[3]));
+            s.setString(2,cmsgArray[4]);
+            s.executeUpdate();
+        } catch (SQLException ex) {  
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+                if(s!=null)
+                    s.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+        //////////////// Add to cart function /////////////////
+    private void removeFromCartDB(String cmsg){
+        
+        String []cmsgArray=cmsg.split("~@");
+        PreparedStatement stmt=null;
+        Statement ss=null;
+        PreparedStatement upd=null;
+         int id=-1;
+        try {
+            // table name
+            String Q = "select MAX(cart_id) from cart where c_name='"+cmsgArray[1]+"' and pname='"+cmsgArray[2]+"' and no_of_products="+Integer.parseInt(cmsgArray[3]);
+            
+            ss = con.createStatement();                                                   
+            ResultSet rss =ss.executeQuery(Q);
+            
+
+            while(rss.next()){
+            id = rss.getInt("MAX(cart_id)");
+            }
+
+            stmt=con.prepareStatement("delete from cart where cart_id=?");           
+            stmt.setInt(1, id);
+            stmt.executeUpdate();  
+            
+             //update product table 
+            upd=con.prepareStatement("update product set quantity=quantity+? where pname=?");
+            
+            upd.setInt(1,Integer.parseInt(cmsgArray[3]));
+            upd.setString(2, cmsgArray[2]);
+            upd.executeUpdate();
+            
+            
+            
+        } catch (SQLException ex) { 
+            
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+                if(ss !=null)
+                    ss.close();
+                if(upd !=null)
+                    upd.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        
+    }
     //////////////// Get Purshased items function /////////////////
-   
+  
+    
+    
+    
 }
     
     
 
-//        try { 
-//            try {
-//           //  class.forName("com.mysql.jdbc.Driver");
-//           in.readLine();
-//           out.println("received");
-//            Connection con =DriverManager.getConnection("jdbc:mysql://localhost:3306/online_bookstore","root","Peter.06423852");
-//            Statement stmt = con.createStatement();
-//            ResultSet rs = stmt.executeQuery("select Fname,Lname  from user");
-//            while (rs.next()) {
-//                String fname = rs.getString("Fname");
-//                String lname = rs.getString("Lname");
-//                
-//                //System.out.println("Fname " + fname +"  Lname "+ lname);
-//                out.println(fname+" "+lname);              
-//
-//            }
-//            stmt.close();
-//            System.out.println("success");
-//        } catch (Exception ex) { }// catch (SQLException ex) {  }
-//            
-//            
-//            if(false){
-//                out.println("hello sir");
-//                in.readLine();
-//            }
-//              
-//        } catch (IOException ex) {}
-//        finally{
-//            try {
-//            in.close();
-//            out.close ();
-//            clientSocket.close();
-//            } catch (IOException ex) {}
-//        }
 
-    
-    
-//    public void send(String x) throws IOException{
-//    out.println(x);
-//    out.flush();
-//    }
-//    public void sendToAll(String x) throws IOException{
-//        for (ClientHandler aclient : clients) {
-//            aclient.send(x);
-//        }
-//    
-//    }
