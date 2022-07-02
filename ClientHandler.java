@@ -83,6 +83,21 @@ public class ClientHandler extends Thread {
             else if (cmsg.startsWith("removeFromCart")){
                 removeFromCartDB(cmsg);    
             }
+            else if (cmsg.contains("getAvailQun")){
+                getAvailQunDB(cmsg);
+            }
+            else if (cmsg.startsWith("addProduct")){
+                addProductDB(cmsg);
+            }
+            else if (cmsg.startsWith("editProduct")){
+                editProductDB(cmsg);
+            }            
+            else if (cmsg.startsWith("deleteProduct")){
+                deleteProductDB(cmsg);
+            }
+            else if(cmsg.contains("signout")){
+                break;
+            }
         }
     }
  //////////////// Sign Up function /////////////////
@@ -276,7 +291,7 @@ public class ClientHandler extends Thread {
     }
     }
     //////////////// Get Client list function /////////////////
-       private void ShowClientList(){
+       private synchronized void ShowClientList(){
         String list="";
         Statement stmt=null;
        // Statement s=null;
@@ -319,7 +334,7 @@ public class ClientHandler extends Thread {
     
     
     //////////////// Get Products function /////////////////
-    private void getproductsDB(){
+    private synchronized void getproductsDB(){
         String products="";
         Statement stmt=null;
         try {
@@ -345,7 +360,7 @@ public class ClientHandler extends Thread {
         }
     }
     //////////////// Add to cart function /////////////////
-    private void addToCartDB(String cmsg){
+    private synchronized void addToCartDB(String cmsg){
         String []cmsgArray=cmsg.split("~@");
         PreparedStatement stmt=null;
         PreparedStatement s=null;
@@ -377,7 +392,7 @@ public class ClientHandler extends Thread {
         }
     }
         //////////////// Add to cart function /////////////////
-    private void removeFromCartDB(String cmsg){
+    private synchronized void removeFromCartDB(String cmsg){
         
         String []cmsgArray=cmsg.split("~@");
         PreparedStatement stmt=null;
@@ -503,8 +518,128 @@ public class ClientHandler extends Thread {
     
     }
 }
+    private synchronized void getAvailQunDB(String cmsg){
+        String []cmsgArray=cmsg.split("~@");
+        int quan=-1 ;
+        Statement stmt=null;
+        try {
+            // table name
+            String Q = "select quantity from product where pname='"+cmsgArray[1]+"'";            
+            stmt = con.createStatement();                                                   
+            ResultSet rs =stmt.executeQuery(Q);
+            while(rs.next()){
+            quan = rs.getInt("quantity");
+            }
+            out.println(quan);            
+
+        } catch (SQLException ex) { 
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    private synchronized void addProductDB(String cmsg){
+        String []cmsgArray=cmsg.split("~@");
+        PreparedStatement stmt=null;
+        Statement productSearch=null;
+        PreparedStatement updateQ=null;
+        
+        try {
+            
+            String Q2 = "select pname from product where pname='"+cmsgArray[3]+"'";            
+            productSearch = con.createStatement();                                                   
+            ResultSet rs2 =productSearch.executeQuery(Q2);
+            if(rs2.next()){
+                
+                updateQ=con.prepareStatement("update product set quantity=quantity+? where pname=?  ");
+                updateQ.setInt(1, Integer.parseInt(cmsgArray[1]));
+                updateQ.setString(2,cmsgArray[3]);              
+                updateQ.executeUpdate();
+                
+            }
+            else{
+                stmt=con.prepareStatement("INSERT INTO product VALUES(?,?,?,?)");
+                System.out.println(cmsg);
+                stmt.setInt(1, Integer.parseInt(cmsgArray[1]));
+                stmt.setFloat(2,Float.parseFloat(cmsgArray[2]));
+                stmt.setString(3,cmsgArray[3]);
+                stmt.setString(4,cmsgArray[4]);
+                stmt.executeUpdate();
+            }
+            
+            
+           
+        }   catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {
+                if(stmt !=null)
+                    stmt.close();
+                if(updateQ !=null)
+                    updateQ.close();
+                if(productSearch !=null)
+                    productSearch.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    private synchronized void editProductDB(String cmsg){
+        String []cmsgArray=cmsg.split("~@");
+        PreparedStatement update=null;
+        String q="update product set quantity=? , price=? , cat_name=? where pname=?";
+        try {  
+                update=con.prepareStatement(q);
+                update.setInt(1, Integer.parseInt(cmsgArray[1]));
+                update.setFloat(2,Float.parseFloat(cmsgArray[2]));
+                update.setString(3,cmsgArray[4]); 
+                update.setString(4,cmsgArray[3]);
+                update.executeUpdate();
+                
+            }
+           catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {               
+                if(update !=null)
+                    update.close();               
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+  private synchronized void deleteProductDB(String cmsg){
+        String []cmsgArray=cmsg.split("~@");
+        PreparedStatement update=null;
+        String q="update product set quantity=? where pname=?";
+        try {  
+                update=con.prepareStatement(q);
+                update.setInt(1, 0);         
+                update.setString(2,cmsgArray[1]);
+                update.executeUpdate();
+                
+            }
+           catch (SQLException ex) {
+            Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            try {               
+                if(update !=null)
+                    update.close();               
+            } catch (SQLException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+  }
     //////////////////////function get products List/////////////////////////
-      private void ShowProductsList(String req ){
+      private synchronized void ShowProductsList(String req ){
         String products="";
         String[] Array=req.split(" ");
         Statement stmt=null;
