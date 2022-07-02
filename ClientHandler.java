@@ -19,7 +19,7 @@ import java.sql.*;
  *
  * @author ED
  */
-public class ClientHandler implements Runnable{
+public class ClientHandler extends Thread {
     private Socket clientSocket;
     private  BufferedReader in;
     private PrintWriter out;
