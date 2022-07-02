@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package parallel2;
 
 import com.mysql.cj.x.protobuf.MysqlxSql;
 import java.io.BufferedReader;
