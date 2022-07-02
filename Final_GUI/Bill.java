@@ -20,15 +20,33 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import static javax.swing.text.html.HTML.Tag.P;
 import net.proteanit.sql.DbUtils;
+
 public class Bill extends javax.swing.JFrame {
-    
     int i=0;
-    public Bill() {
+private static String username;
+    public Bill(String uname) {
+        this.username = uname;
+        Client.setC_name(uname);
         initComponents();
+        displayProducts();
 
     }
+    private synchronized void displayProducts(){
+        Client.init();
+        String products= Client.getProducts();
+        String []items=products.split("~@");
+        DefaultTableModel table=(DefaultTableModel) ProductTable.getModel();
+        int numProduct=items.length/5;
+        int x=0;
+        table.setRowCount(0);
+        for (int i = 0; i <=numProduct; i++) {
+            table.addRow(new Object[]{i+1,items[x++],items[x++],items[x++],items[x++]});
+            
+        }
+    Client.close();
+    }
     
-    
+ 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -57,7 +75,9 @@ public class Bill extends javax.swing.JFrame {
         TotalLable = new javax.swing.JLabel();
         purchase1 = new javax.swing.JButton();
         totallbl = new javax.swing.JLabel();
-        LogBtn = new javax.swing.JLabel();
+        backbtn = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -208,6 +228,7 @@ public class Bill extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(cartTable);
 
+        searchText.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         searchText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 searchTextActionPerformed(evt);
@@ -350,6 +371,20 @@ public class Bill extends javax.swing.JFrame {
         totallbl.setForeground(new java.awt.Color(51, 153, 0));
         totallbl.setText("Total:");
 
+        backbtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        backbtn.setForeground(new java.awt.Color(51, 153, 0));
+        backbtn.setText("Back");
+        backbtn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backbtnMouseClicked(evt);
+            }
+        });
+        backbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backbtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -365,7 +400,9 @@ public class Bill extends javax.swing.JFrame {
                         .addGap(58, 58, 58)
                         .addComponent(totallbl, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(210, 210, 210)
-                        .addComponent(purchase1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(purchase1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(167, 167, 167)
+                        .addComponent(backbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -376,19 +413,29 @@ public class Bill extends javax.swing.JFrame {
                     .addComponent(TotalLable, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(purchase1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(totallbl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(purchase1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(totallbl, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(backbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(26, 26, 26))
         );
 
-        LogBtn.setBackground(new java.awt.Color(51, 153, 0));
-        LogBtn.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        LogBtn.setForeground(new java.awt.Color(240, 240, 240));
-        LogBtn.setText("Logout");
-        LogBtn.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(51, 153, 0));
+        jButton1.setText("Logout");
+        jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                LogBtnMouseClicked(evt);
+                jButton1MouseClicked(evt);
+            }
+        });
+
+        jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(0, 153, 0));
+        jButton2.setText("EXIT");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
             }
         });
 
@@ -397,8 +444,12 @@ public class Bill extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(4, 4, 4)
-                .addComponent(LogBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 851, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
@@ -411,8 +462,10 @@ public class Bill extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(LogBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37))
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -432,22 +485,48 @@ public class Bill extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DeleteBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_DeleteBtnMouseClicked
+       Client.init();
+        DefaultTableModel table=(DefaultTableModel) cartTable.getModel();
+        int row=cartTable.getSelectedRow();
+        String pname=table.getValueAt(row, 1).toString();
+        String quant=table.getValueAt(row, 3).toString();
+        Double totalItem=Double.valueOf(table.getValueAt(row, 4).toString());        
+        table.removeRow(row);       
+        Client.removeFromCart(pname,quant);
+        displayProducts();
+        Total=Total- totalItem;
+        totallbl.setText("Total: "+Total);
+        //DefaultTableModel tablep=(DefaultTableModel) ProductTable.getModel();
+        //int updateQuanRow=pRowsInCart.get(cartPnames.indexOf(pname));
+//        int AvailQuan=Integer.valueOf(tablep.getValueAt(updateQuanRow, 2).toString());
+//        AvailQuan=AvailQuan+Integer.parseInt(quant);
+//        tablep.setValueAt(AvailQuan, updateQuanRow, 2);
+       Client.close();
         
     }//GEN-LAST:event_DeleteBtnMouseClicked
     Double ProdTotal=0.0,Uprice,Total=0.0;
+    //int AvailQun;
     int Myindex;
+    
     private void ProductTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ProductTableMouseClicked
-       DefaultTableModel model=(DefaultTableModel)ProductTable.getModel();
+       Client.init();
+        DefaultTableModel model=(DefaultTableModel)ProductTable.getModel();
        Myindex=ProductTable.getSelectedRow();
+       //AvailQun=Integer.valueOf(model.getValueAt(Myindex, 2).toString());
        ProductName.setText(model.getValueAt(Myindex, 1).toString());
        Uprice=Double.valueOf(model.getValueAt(Myindex, 3).toString());
+       //ProdTotal=Uprice*Double.valueOf(ProductQun.getText());
+              Client.close();
+
     }//GEN-LAST:event_ProductTableMouseClicked
 
     private void AddBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddBtnMouseClicked
+     Client.init();
         int AvailQun=Integer.parseInt(Client.getAvailQun(ProductName.getText()));
         if(ProductName.getText().isEmpty()||ProductQun.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Missing Information");    
         }else if(AvailQun<Integer.valueOf(ProductQun.getText())){
+            displayProducts();
             JOptionPane.showMessageDialog(this, "Not Enough In Stock");    
         }else{
             i++;
@@ -456,31 +535,46 @@ public class Bill extends javax.swing.JFrame {
             DefaultTableModel table=(DefaultTableModel) cartTable.getModel();
             table.addRow(new Object[]{i,ProductName.getText(),Uprice,ProductQun.getText(),ProdTotal});
             totallbl.setText("Total: "+Total);
+            //pRowsInCart.add(Myindex);
+            //cartPnames.add(ProductName.getText());
             Client.addToCart(ProductName.getText(), ProductQun.getText(), ProdTotal);
-
-
+//            int newQuan= AvailQun-Integer.parseInt(ProductQun.getText());
+//            DefaultTableModel model=(DefaultTableModel)ProductTable.getModel();
+//            if(newQuan==0){
+//                model.removeRow(Myindex);
+//            }else{              
+//                model.setValueAt(newQuan, Myindex, 2);
+//            }
+            displayProducts();
             ProductName.setText("");
             ProductQun.setText("");
               
-        }
+        } Client.close();
     }//GEN-LAST:event_AddBtnMouseClicked
 
     private void AddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddBtnActionPerformed
         
     }//GEN-LAST:event_AddBtnActionPerformed
 
-    private void LogBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LogBtnMouseClicked
-       new Login().setVisible(true);
-       this.dispose();
-    }//GEN-LAST:event_LogBtnMouseClicked
-
     private void nameOrCatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nameOrCatMouseClicked
   
+//        try{      
+//       Con =(Connection) DriverManager.getConnection("jdbc:derby://localhost:1527/Store","user1","1234");     
+//       st=Con.createStatement();      
+//     Rs=(ResultSet) st.executeQuery("select * from user1.PRODUCTTABLE where CATNAME='"+catcb.getSelectedItem().toString()+"'");      
+//       ProductTable.setModel(DbUtils.resultSetToTableModel((java.sql.ResultSet) Rs));   
+//   }catch(Exception e){
+//       e.printStackTrace();
+//    }
     }//GEN-LAST:event_nameOrCatMouseClicked
 
     private void RefreshMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RefreshMouseClicked
 //       SelectSeller();
+         Client.init();
+         
          Client.getProducts();
+         displayProducts();
+         Client.close();
     }//GEN-LAST:event_RefreshMouseClicked
 
     private void nameOrCatItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_nameOrCatItemStateChanged
@@ -488,7 +582,42 @@ public class Bill extends javax.swing.JFrame {
     }//GEN-LAST:event_nameOrCatItemStateChanged
 
     private void purchase1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_purchase1MouseClicked
+       Client.init();
+        int balance = Integer.parseInt(Client.purchase(username));
+        String[] Arr=totallbl.getText().split(" ");
+        int tot =(int) Float.parseFloat(Arr[1]);
+       if(balance >= tot&&tot!=0){
+        System.out.println("if"); 
+       DefaultTableModel table=(DefaultTableModel) cartTable.getModel();
+      table.setRowCount(0);
+       totallbl.setText("Total: "+0);
+      
+       JOptionPane.showMessageDialog(this, "successful payment");
+       Client.changeBalance(username,tot,balance);
+        displayProducts();
+   //    new Bill(username).setVisible(true);
+      //this.dispose();
+      //new Bill(username).setVisible(true);
+       }
+       else if (tot==0||String.valueOf(tot).isEmpty()){
+           JOptionPane.showMessageDialog(this, "please add items to cart");
+       }
+       else {
+          // System.out.println("else");
+       int depositedMoney = Integer.parseInt(JOptionPane.showInputDialog("enter amount to deposit"));
+      // Client.depositCS("peter",balance,depositedMoney);
+        if(depositedMoney<=0){
+                JOptionPane.showMessageDialog(this, "please enter +ve amunt of money");
+            }
+            else{
+                Client.depositCS(username, balance, depositedMoney);
+            }
+       }
        
+       Client.close();
+       //this.dispose();
+       //new payment().setVisible(true);
+       //this.dispose();
     }//GEN-LAST:event_purchase1MouseClicked
 
     private void purchase1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_purchase1ActionPerformed
@@ -505,12 +634,59 @@ public class Bill extends javax.swing.JFrame {
 
     private void searchTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextKeyReleased
         // TODO add your handling code here:
-        
+        Client.init();
+        int c=0;
+        if(nameOrCat.getSelectedItem().toString().equals("Name"))
+            c=1;
+        else{
+            c=4;
+        }
+        DefaultTableModel table=(DefaultTableModel) ProductTable.getModel();
+        TableRowSorter<DefaultTableModel> tr=new TableRowSorter<DefaultTableModel>(table);
+        ProductTable.setRowSorter(tr);
+        tr.setRowFilter(RowFilter.regexFilter(searchText.getText(),c));
+         Client.close();
     }//GEN-LAST:event_searchTextKeyReleased
 
     private void searchTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchTextActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_searchTextActionPerformed
+
+    private void backbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backbtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_backbtnActionPerformed
+
+    private void backbtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backbtnMouseClicked
+        // TODO add your handling code here:
+         Client.init();
+        DefaultTableModel table=(DefaultTableModel) cartTable.getModel();
+        int rowCount =table.getRowCount();
+         String pname;
+         String quant;
+        for (int j = rowCount-1; j >= 0; j--) {
+            pname =table.getValueAt(j, 1).toString();
+            quant=table.getValueAt(j, 3).toString();
+            Client.removeFromCart(pname,quant);
+        }
+        table.setRowCount(0);
+        totallbl.setText("Total: "+0);
+        Client.close();
+        new options(username).setVisible(true);
+        this.dispose();
+         
+    }//GEN-LAST:event_backbtnMouseClicked
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        // TODO add your handling code here:
+        new Login().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1MouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        Client.close();
+        this.dispose();
+    }//GEN-LAST:event_jButton2MouseClicked
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -535,11 +711,12 @@ public class Bill extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Bill.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Bill().setVisible(true);
+//                new Bill().setVisible(true);
             }
         });
     }
@@ -547,13 +724,15 @@ public class Bill extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddBtn;
     private javax.swing.JButton DeleteBtn;
-    private javax.swing.JLabel LogBtn;
     private javax.swing.JTextField ProductName;
     private javax.swing.JTextField ProductQun;
     private javax.swing.JTable ProductTable;
     private javax.swing.JButton Refresh;
     private javax.swing.JLabel TotalLable;
+    private javax.swing.JButton backbtn;
     private javax.swing.JTable cartTable;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

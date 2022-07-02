@@ -5,16 +5,7 @@
  */
 package parallel2;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.swing.table.DefaultTableModel;
 
 
@@ -31,24 +22,27 @@ public class AccountInformation extends javax.swing.JFrame {
        this.cashh=cashhs;
         
         initComponents();
-      Address.setText(add);
+       
+        Address.setText(add);
         phone.setText(String.valueOf(pho));
         Cash.setText(String.valueOf(cashh));
         clientname.setText(uname);
         displayListofP();
+         //this.setLocationRelativeTo(null);
     }
-     private void displayListofP(){
-        String products= Client.getProductsList(uname);
-        String [] items=products.split("~@");
+     private synchronized void displayListofP(){
+         Client.init();
+        String products = Client.getProductsList(uname);
+        String [] items = products.split("~@");
         DefaultTableModel table=(DefaultTableModel) paymenttable.getModel();
         int numProduct=items.length/3;
         int x=0;
-        System.out.println(numProduct+"ffftttttt"+products);
+      
         for (int i = 0; i <numProduct; i++) {
             table.addRow(new Object[]{items[x++],items[x++],items[x++]});
             
         }
-    
+    Client.close();
     }
          
     @SuppressWarnings("unchecked")
@@ -200,6 +194,11 @@ public class AccountInformation extends javax.swing.JFrame {
         logout.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         logout.setForeground(new java.awt.Color(0, 153, 0));
         logout.setText("logout");
+        logout.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logoutMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -217,7 +216,7 @@ public class AccountInformation extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
+                .addContainerGap(27, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(Make_order, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -245,9 +244,15 @@ public class AccountInformation extends javax.swing.JFrame {
 
     private void Make_orderMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Make_orderMouseClicked
         // TODO add your handling code here:
-         new Bill(uname).setVisible(true);
+        new Bill(uname).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_Make_orderMouseClicked
+
+    private void logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logoutMouseClicked
+        // TODO add your handling code here:
+       new Login().setVisible(true);
+       this.dispose(); 
+    }//GEN-LAST:event_logoutMouseClicked
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
