@@ -17,12 +17,16 @@ public class Client {
     private static PrintWriter out;
     private static String c_name=""; // c_name="" when login is finished
     private static Socket connection=null ;
-
+    private static String IP;
+    public static void setIP(String IP) {
+     Client.IP = IP;
+  
+    }
     
     public static void init() {
         try {
-            InetAddress addr=InetAddress.getByName ("Localhost");
-            connection=new Socket (addr, 909);
+            //InetAddress addr=InetAddress.getByName ("Localhost");
+            connection = new Socket(IP, 1234);
             
             in=new BufferedReader(new InputStreamReader(connection.getInputStream()));
             out  = new PrintWriter(connection.getOutputStream(),true);
