@@ -126,10 +126,11 @@ public class Client {
 //////////////Function request for ViewAccountInformation////////////////////
   public static String AccountInformationCS(String uname){
     String data ="";
+      out.println("Account "+uname);
     try{
-    dos.writeUTF("Account "+uname);
-    dos.flush();
-    data = dis.readUTF();
+    //dos.writeUTF("Account "+uname);
+    //dos.flush();
+    data = in.readLine();
     }
     catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -139,13 +140,13 @@ public class Client {
 //////////////Function request for ShowClientList to Admin////////////////////
   public static String getList(){
       String clients="";
-        //out.println("getProductsList");
+        out.println("getCLientList");
         
         try {
-            dos.writeUTF("getCLientList");
-            dos.flush();
-            //products=in.readLine();
-            clients=dis.readUTF();
+            //dos.writeUTF("getCLientList");
+            //dos.flush();
+            clients=in.readLine();
+            //clients=dis.readUTF();
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -155,9 +156,10 @@ public class Client {
     public synchronized static void depositCS (String uname,int balance,int depositedMoney)
     {
      //String data = "";
+        out.println("deposit "+uname+" "+balance+" "+depositedMoney);
     try{
-    dos.writeUTF("deposit "+uname+" "+balance+" "+depositedMoney);
-    dos.flush();
+   // dos.writeUTF("deposit "+uname+" "+balance+" "+depositedMoney);
+   // dos.flush();
     //out.println("deposit "+uname+" "+balance+" "+depositedMoney);
   // data = dis.readUTF();
     }
